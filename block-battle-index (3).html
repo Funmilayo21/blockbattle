@@ -1,0 +1,1603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Block Battle — Meme Arena</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg:       #0d0e17;
+  --bg2:      #13141f;
+  --bg3:      #1a1b2e;
+  --bg4:      #1e2035;
+  --border:   rgba(255,255,255,0.06);
+  --purple:   #7c3aed;
+  --purple2:  #9d5ff3;
+  --pink:     #ec4899;
+  --cyan:     #22d3ee;
+  --gold:     #f59e0b;
+  --green:    #10b981;
+  --red:      #ef4444;
+  --text:     #e2e8f0;
+  --muted:    #64748b;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;top:-200px;left:50%;transform:translateX(-50%);width:800px;height:600px;background:radial-gradient(ellipse,rgba(124,58,237,0.12) 0%,transparent 70%);pointer-events:none;z-index:0;}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:64px;background:rgba(13,14,23,0.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:'Syne',sans-serif;font-weight:800;font-size:1.2rem;color:#fff;}
+.logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--purple),var(--pink));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;box-shadow:0 0 20px rgba(124,58,237,0.4);}
+.nav-links{display:flex;align-items:center;gap:4px;}
+.nav-link{font-size:0.9rem;font-weight:500;color:var(--muted);padding:8px 16px;border-radius:8px;cursor:pointer;transition:all .2s;border:none;background:none;font-family:'DM Sans',sans-serif;position:relative;}
+.nav-link:hover{color:var(--text);background:rgba(255,255,255,0.04);}
+.nav-link.active{color:#fff;}
+.nav-link.active::after{content:'';position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);width:20px;height:2px;background:var(--purple2);border-radius:2px;}
+.connect-btn{font-family:'DM Sans',sans-serif;font-weight:600;font-size:0.9rem;padding:10px 22px;border-radius:10px;border:none;background:linear-gradient(135deg,var(--purple),var(--purple2));color:#fff;cursor:pointer;transition:all .2s;box-shadow:0 4px 20px rgba(124,58,237,0.35);white-space:nowrap;}
+.connect-btn:hover{transform:translateY(-1px);box-shadow:0 8px 28px rgba(124,58,237,0.5);}
+.connect-btn.connected{background:var(--bg3);border:1px solid var(--border);color:var(--text);box-shadow:none;display:flex;align-items:center;gap:8px;}
+.connect-btn.connected:hover{background:var(--bg4);transform:none;}
+.wallet-dot-nav{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:dpulse 2s infinite;}
+@keyframes dpulse{50%{opacity:.5;}}
+
+/* PAGES */
+.page{display:none;}.page.active{display:block;}
+
+/* HERO */
+.hero{display:flex;flex-direction:column;align-items:center;padding:60px 20px 40px;position:relative;z-index:1;}
+.hero-coin{position:relative;width:160px;height:160px;margin-bottom:32px;}
+.coin-ring{width:160px;height:160px;border-radius:50%;background:linear-gradient(135deg,#1e1b4b,#2d1b69);border:3px solid var(--gold);display:flex;align-items:center;justify-content:center;box-shadow:0 0 40px rgba(245,158,11,0.25),inset 0 0 40px rgba(124,58,237,0.2);animation:cfloat 4s ease-in-out infinite;position:relative;z-index:1;}
+@keyframes cfloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+.coin-inner{width:110px;height:110px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--pink));display:flex;align-items:center;justify-content:center;font-size:2.8rem;}
+.coin-dot{position:absolute;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan);top:50%;left:50%;}
+.coin-dot:nth-child(2){animation:orbit1 6s linear infinite;width:6px;height:6px;margin-top:-3px;margin-left:-3px;}
+.coin-dot:nth-child(3){animation:orbit2 9s linear infinite;width:5px;height:5px;background:var(--pink);box-shadow:0 0 6px var(--pink);margin-top:-2.5px;margin-left:-2.5px;}
+.coin-dot:nth-child(4){animation:orbit3 12s linear infinite;width:4px;height:4px;background:var(--gold);box-shadow:0 0 6px var(--gold);margin-top:-2px;margin-left:-2px;}
+@keyframes orbit1{from{transform:rotate(0deg) translateX(88px) rotate(0deg);}to{transform:rotate(360deg) translateX(88px) rotate(-360deg);}}
+@keyframes orbit2{from{transform:rotate(120deg) translateX(88px) rotate(-120deg);}to{transform:rotate(480deg) translateX(88px) rotate(-480deg);}}
+@keyframes orbit3{from{transform:rotate(240deg) translateX(88px) rotate(-240deg);}to{transform:rotate(600deg) translateX(88px) rotate(-600deg);}}
+.hero h1{font-family:'Syne',sans-serif;font-size:2.8rem;font-weight:800;background:linear-gradient(135deg,var(--cyan),var(--purple2),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:12px;text-align:center;}
+.hero-sub{font-size:1rem;color:var(--muted);margin-bottom:8px;text-align:center;}
+.hero-badge{font-size:.75rem;color:var(--muted);display:flex;align-items:center;gap:6px;margin-bottom:40px;}
+.hero-badge::before,.hero-badge::after{content:'';display:block;width:20px;height:1px;background:var(--border);}
+
+/* CARD */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:28px;width:100%;max-width:720px;margin:0 auto 16px;position:relative;z-index:1;}
+.card-label{font-size:.7rem;font-weight:600;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:20px;}
+.card-divider{height:1px;background:var(--border);margin:20px 0;}
+
+/* TIERS */
+.bet-tiers{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:4px;}
+.tier{display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;transition:all .2s;padding:10px;border-radius:12px;border:2px solid transparent;min-width:68px;}
+.tier:hover{background:rgba(124,58,237,.08);transform:translateY(-2px);}
+.tier.selected{border-color:var(--purple2);background:rgba(124,58,237,.12);}
+.coin-stack{position:relative;width:52px;}
+.cl{position:absolute;width:44px;height:18px;border-radius:50%;left:4px;}
+.cl1{background:linear-gradient(180deg,#6d28d9,#4c1d95);border:1.5px solid rgba(167,139,250,.5);}
+.cl2{background:linear-gradient(180deg,#7c3aed,#5b21b6);border:1.5px solid rgba(167,139,250,.5);}
+.cl3{background:linear-gradient(180deg,#8b5cf6,#6d28d9);border:1.5px solid rgba(167,139,250,.6);}
+.cl4{background:linear-gradient(180deg,#a78bfa,#7c3aed);border:1.5px solid rgba(196,181,253,.6);display:flex;align-items:center;justify-content:center;}
+.cl4 span{font-size:.5rem;color:rgba(255,255,255,.7);font-weight:700;font-family:'Syne',sans-serif;}
+.tier-amt{font-family:'Syne',sans-serif;font-weight:700;font-size:.85rem;color:var(--text);}
+
+/* FIGHTERS */
+.fighters-row{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;margin-bottom:20px;}
+.fighter-btn{display:flex;flex-direction:column;align-items:center;gap:10px;padding:20px 16px;border-radius:14px;border:2px solid var(--border);background:var(--bg3);cursor:pointer;transition:all .25s;font-family:'DM Sans',sans-serif;width:100%;}
+.fighter-btn:hover{border-color:rgba(124,58,237,.4);background:var(--bg4);transform:translateY(-2px);}
+.fighter-btn.picked-a{border-color:var(--green);background:rgba(16,185,129,.08);box-shadow:0 0 20px rgba(16,185,129,.15);}
+.fighter-btn.picked-b{border-color:var(--red);background:rgba(239,68,68,.08);box-shadow:0 0 20px rgba(239,68,68,.15);}
+.fighter-emoji{font-size:2.8rem;line-height:1;}
+.fighter-name{font-family:'Syne',sans-serif;font-weight:700;font-size:.82rem;color:#fff;text-align:center;}
+.fighter-votes{font-size:.7rem;color:var(--muted);}
+.fighter-pct{font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;}
+.fighter-pct.up{color:var(--green);}.fighter-pct.dn{color:var(--red);}
+.vs-pill{width:40px;height:40px;border-radius:50%;background:var(--bg4);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:.8rem;color:var(--muted);flex-shrink:0;}
+
+/* VOTE BAR */
+.vote-bar-track{height:6px;background:rgba(239,68,68,.25);border-radius:6px;overflow:hidden;margin-bottom:6px;}
+.vote-bar-fill{height:100%;background:linear-gradient(90deg,var(--green),#34d399);border-radius:6px;transition:width .8s ease;box-shadow:0 0 8px rgba(16,185,129,.4);}
+.vote-bar-labels{display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted);}
+
+/* ACTION BTN */
+.action-btn{width:100%;font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;padding:16px;border-radius:12px;border:none;cursor:pointer;transition:all .2s;background:linear-gradient(135deg,var(--purple),var(--purple2));color:#fff;box-shadow:0 4px 24px rgba(124,58,237,.35);letter-spacing:.5px;}
+.action-btn:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(124,58,237,.5);}
+.action-btn:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none;}
+
+/* ROUND ROW */
+.round-row{display:flex;align-items:center;justify-content:space-between;max-width:720px;margin:0 auto 14px;padding:0 4px;position:relative;z-index:1;}
+.round-pill{display:flex;align-items:center;gap:8px;background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:6px 14px;font-size:.78rem;color:var(--muted);}
+.round-pill strong{color:var(--text);font-family:'Syne',sans-serif;}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--red);box-shadow:0 0 6px var(--red);animation:dpulse 1s infinite;}
+.timer-pill{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:6px 14px;font-family:'Syne',sans-serif;font-weight:700;font-size:.85rem;color:var(--gold);}
+
+/* STATS */
+.stats-row{display:flex;gap:12px;max-width:720px;margin:0 auto 32px;position:relative;z-index:1;flex-wrap:wrap;}
+.stat-card{flex:1;min-width:140px;background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px 18px;}
+.stat-val{font-family:'Syne',sans-serif;font-weight:800;font-size:1.3rem;color:#fff;margin-bottom:2px;}
+.stat-key{font-size:.7rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;}
+
+/* SECTION */
+.section{max-width:720px;margin:0 auto 32px;position:relative;z-index:1;}
+.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.section-title{font-family:'Syne',sans-serif;font-weight:700;font-size:1.05rem;color:#fff;}
+.section-sub{font-size:.78rem;color:var(--muted);}
+
+/* BRACKET */
+.bracket-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.bracket-item{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px 12px;text-align:center;position:relative;overflow:hidden;}
+.bracket-item::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:2px 2px 0 0;}
+.bracket-item.won::before{background:var(--gold);}
+.bracket-item.fighting::before{background:var(--purple2);animation:dpulse 1s infinite;}
+.bracket-item.lost::before{background:var(--muted);}
+.bi-emoji{font-size:1.5rem;margin-bottom:5px;}
+.bi-name{font-family:'Syne',sans-serif;font-weight:700;font-size:.72rem;color:var(--text);}
+.bi-status{font-size:.6rem;letter-spacing:1px;margin-top:3px;text-transform:uppercase;}
+.bi-status.won{color:var(--gold);}.bi-status.fighting{color:var(--purple2);}.bi-status.lost{color:var(--muted);}
+
+/* LEADERBOARD */
+.lb-list{display:flex;flex-direction:column;gap:8px;}
+.lb-item{display:flex;align-items:center;gap:14px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px 18px;transition:all .2s;}
+.lb-item:hover{background:var(--bg3);transform:translateX(2px);}
+.lb-rank{font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;width:24px;text-align:center;flex-shrink:0;}
+.lb-rank.r1{color:var(--gold);}.lb-rank.r2{color:#94a3b8;}.lb-rank.r3{color:#cd7f32;}.lb-rank.rn{color:var(--muted);}
+.lb-emoji{font-size:1.5rem;flex-shrink:0;}
+.lb-info{flex:1;}
+.lb-name{font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;color:#fff;}
+.lb-creator{font-size:.7rem;color:var(--muted);margin-top:1px;}
+.lb-right{text-align:right;}
+.lb-wins{font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;color:var(--green);}
+.lb-votes{font-size:.68rem;color:var(--muted);margin-top:1px;}
+
+/* HISTORY */
+.history-list{display:flex;flex-direction:column;gap:8px;}
+.history-item{display:flex;align-items:center;gap:14px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px 18px;}
+.hi-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
+.hi-icon.win{background:rgba(16,185,129,.15);}.hi-icon.lose{background:rgba(239,68,68,.15);}
+.hi-info{flex:1;}
+.hi-title{font-family:'Syne',sans-serif;font-weight:600;font-size:.88rem;color:#fff;}
+.hi-meta{font-size:.7rem;color:var(--muted);margin-top:2px;}
+.hi-result{font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;}
+.hi-result.win{color:var(--green);}.hi-result.lose{color:var(--red);}
+
+/* STAKING */
+.stake-stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px;}
+.stake-stat{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center;}
+.ssv{font-family:'Syne',sans-serif;font-weight:800;font-size:1.2rem;color:#fff;}
+.ssk{font-size:.68rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:3px;}
+.stake-input-row{display:flex;gap:10px;margin-bottom:12px;}
+.stake-input{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px 16px;font-family:'Syne',sans-serif;font-size:.95rem;color:#fff;outline:none;transition:border-color .2s;}
+.stake-input:focus{border-color:var(--purple2);}
+.stake-btn{font-family:'Syne',sans-serif;font-weight:700;padding:12px 22px;border-radius:10px;border:none;cursor:pointer;transition:all .2s;font-size:.9rem;}
+.stake-btn.primary{background:linear-gradient(135deg,var(--purple),var(--purple2));color:#fff;}
+.stake-btn.secondary{background:var(--bg4);border:1px solid var(--border);color:var(--text);}
+.stake-btn:hover{transform:translateY(-1px);opacity:.9;}
+
+/* SUBMIT */
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+.form-group label{display:block;font-size:.72rem;font-weight:500;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;}
+.form-input,.form-textarea{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:11px 14px;font-family:'DM Sans',sans-serif;font-size:.9rem;color:var(--text);outline:none;transition:border-color .2s;resize:none;}
+.form-input:focus,.form-textarea:focus{border-color:var(--purple2);}
+.emoji-row{display:flex;gap:8px;flex-wrap:wrap;}
+.emoji-pick{font-size:1.6rem;padding:8px;border-radius:10px;cursor:pointer;border:2px solid transparent;background:var(--bg3);transition:all .15s;}
+.emoji-pick:hover{border-color:rgba(124,58,237,.4);transform:scale(1.1);}
+.emoji-pick.chosen{border-color:var(--purple2);background:rgba(124,58,237,.12);}
+
+/* FEED */
+.feed-card{background:var(--bg2);border:1px solid var(--border);border-radius:20px;overflow:hidden;max-width:720px;margin:0 auto 40px;position:relative;z-index:1;}
+.feed-head{padding:16px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.feed-title{font-family:'Syne',sans-serif;font-weight:700;font-size:.95rem;}
+.feed-scroll{max-height:260px;overflow-y:auto;}
+.feed-scroll::-webkit-scrollbar{width:4px;}
+.feed-scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+.feed-item{display:flex;align-items:flex-start;gap:12px;padding:12px 22px;border-bottom:1px solid rgba(255,255,255,.03);font-size:.78rem;animation:fslide .3s ease;}
+@keyframes fslide{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+.feed-icon{font-size:1rem;flex-shrink:0;margin-top:1px;}
+.feed-body{flex:1;line-height:1.5;color:var(--muted);}
+.feed-body b{color:#fff;}
+.feed-time{font-size:.65rem;color:var(--muted);flex-shrink:0;margin-top:2px;}
+
+/* TOAST */
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--bg3);border:1px solid var(--border);color:var(--text);font-size:.85rem;padding:12px 22px;border-radius:12px;z-index:999;opacity:0;transition:all .3s;box-shadow:0 8px 32px rgba(0,0,0,.4);font-family:'DM Sans',sans-serif;pointer-events:none;white-space:nowrap;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* WALLET MODAL */
+.modal-bg{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.6);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s;}
+.modal-bg.open{opacity:1;pointer-events:all;}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:32px;width:100%;max-width:400px;margin:20px;transform:translateY(10px);transition:transform .25s;box-shadow:0 24px 80px rgba(0,0,0,.5);position:relative;}
+.modal-bg.open .modal{transform:translateY(0);}
+.modal-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1.2rem;color:#fff;margin-bottom:6px;}
+.modal-sub{font-size:.85rem;color:var(--muted);margin-bottom:24px;}
+.wallet-option{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:12px;border:1px solid var(--border);background:var(--bg3);cursor:pointer;transition:all .2s;margin-bottom:10px;}
+.wallet-option:hover{border-color:var(--purple2);background:var(--bg4);}
+.wo-icon{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--purple),var(--pink));display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
+.wo-name{font-weight:600;font-size:.9rem;color:#fff;}
+.wo-sub{font-size:.72rem;color:var(--muted);}
+.modal-close{position:absolute;top:18px;right:18px;background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.3rem;padding:4px;line-height:1;}
+.modal-close:hover{color:var(--text);}
+
+/* LEADERBOARD PAGE */
+.lb-page-wrap{max-width:760px;margin:0 auto;padding:32px 20px 60px;position:relative;z-index:1;}
+.lb-tabs{display:flex;gap:6px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:4px;margin-bottom:20px;}
+.lb-tab{flex:1;padding:8px;border:none;border-radius:9px;background:none;color:var(--muted);font-family:'Syne',sans-serif;font-weight:600;font-size:.82rem;cursor:pointer;transition:all .2s;}
+.lb-tab.active{background:var(--bg4);color:#fff;box-shadow:0 2px 8px rgba(0,0,0,.3);}
+.lb-tab:hover:not(.active){color:var(--text);}
+
+.lb-global-row{display:flex;align-items:center;gap:14px;background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:14px 18px;margin-bottom:8px;transition:all .2s;position:relative;overflow:hidden;}
+.lb-global-row:hover{background:var(--bg3);transform:translateX(3px);}
+.lb-global-row.me{border-color:var(--purple2);background:rgba(124,58,237,.08);}
+.lb-global-row.me::before{content:'YOU';position:absolute;right:14px;top:8px;font-size:.55rem;font-weight:700;letter-spacing:2px;color:var(--purple2);font-family:'Syne',sans-serif;}
+.lb-pos-badge{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:.9rem;flex-shrink:0;}
+.lb-pos-badge.p1{background:rgba(245,158,11,.2);color:var(--gold);}
+.lb-pos-badge.p2{background:rgba(148,163,184,.15);color:#94a3b8;}
+.lb-pos-badge.p3{background:rgba(205,127,50,.15);color:#cd7f32;}
+.lb-pos-badge.pn{background:var(--bg3);color:var(--muted);}
+.lb-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
+.lb-player-info{flex:1;min-width:0;}
+.lb-player-addr{font-family:'Syne',sans-serif;font-weight:700;font-size:.88rem;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.lb-player-sub{font-size:.68rem;color:var(--muted);margin-top:2px;}
+.lb-player-stats{display:flex;gap:16px;align-items:center;flex-shrink:0;}
+.lb-stat-chip{text-align:right;}
+.lb-stat-chip-val{font-family:'Syne',sans-serif;font-weight:700;font-size:.88rem;color:#fff;}
+.lb-stat-chip-key{font-size:.62rem;color:var(--muted);letter-spacing:.5px;}
+
+.wallets-banner{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:20px 24px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+.wb-stat{text-align:center;}
+.wb-val{font-family:'Syne',sans-serif;font-weight:800;font-size:1.6rem;color:#fff;}
+.wb-key{font-size:.68rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
+.wb-divider{width:1px;height:40px;background:var(--border);}
+
+/* AIRDROP PAGE */
+.airdrop-wrap{max-width:720px;margin:0 auto;padding:32px 20px 60px;position:relative;z-index:1;}
+.airdrop-hero{text-align:center;margin-bottom:32px;}
+.airdrop-hero-icon{font-size:4rem;margin-bottom:12px;animation:cfloat 3s ease-in-out infinite;}
+.airdrop-hero-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1.8rem;color:#fff;margin-bottom:8px;}
+.airdrop-hero-sub{font-size:.9rem;color:var(--muted);}
+
+.airdrop-points-card{background:linear-gradient(135deg,rgba(124,58,237,.2),rgba(236,72,153,.15));border:1px solid rgba(124,58,237,.4);border-radius:20px;padding:28px;margin-bottom:16px;text-align:center;position:relative;overflow:hidden;}
+.airdrop-points-card::before{content:'';position:absolute;top:-40px;right:-40px;width:150px;height:150px;background:radial-gradient(circle,rgba(124,58,237,.3),transparent 70%);pointer-events:none;}
+.ap-label{font-size:.7rem;letter-spacing:2px;color:var(--purple2);text-transform:uppercase;margin-bottom:8px;}
+.ap-value{font-family:'Syne',sans-serif;font-weight:800;font-size:3rem;color:#fff;margin-bottom:4px;line-height:1;}
+.ap-sub{font-size:.8rem;color:var(--muted);margin-bottom:20px;}
+.ap-bar-wrap{margin-bottom:8px;}
+.ap-bar-labels{display:flex;justify-content:space-between;font-size:.7rem;color:var(--muted);margin-bottom:6px;}
+.ap-bar-track{height:10px;background:rgba(255,255,255,.06);border-radius:10px;overflow:hidden;}
+.ap-bar-fill{height:100%;background:linear-gradient(90deg,var(--purple),var(--pink));border-radius:10px;transition:width 1s ease;box-shadow:0 0 12px rgba(124,58,237,.5);}
+.ap-tier-label{font-size:.75rem;color:var(--purple2);font-weight:600;}
+
+.points-breakdown{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
+.pb-row{display:flex;align-items:center;gap:12px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:12px 16px;}
+.pb-icon{font-size:1.2rem;flex-shrink:0;}
+.pb-info{flex:1;}
+.pb-title{font-family:'Syne',sans-serif;font-weight:600;font-size:.85rem;color:#fff;}
+.pb-desc{font-size:.7rem;color:var(--muted);margin-top:2px;}
+.pb-pts{font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;color:var(--purple2);white-space:nowrap;}
+.pb-earned{font-family:'Syne',sans-serif;font-weight:800;font-size:.85rem;white-space:nowrap;text-align:right;}
+.pb-earned.done{color:var(--green);}
+.pb-earned.todo{color:var(--muted);}
+
+.referral-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:16px;}
+.ref-input-row{display:flex;gap:8px;margin-top:12px;}
+.ref-input{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:10px 14px;font-family:'Syne',sans-serif;font-size:.85rem;color:var(--muted);}
+.ref-copy-btn{background:linear-gradient(135deg,var(--purple),var(--purple2));color:#fff;border:none;border-radius:10px;padding:10px 18px;font-family:'Syne',sans-serif;font-weight:700;font-size:.82rem;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.ref-copy-btn:hover{opacity:.85;}
+
+.airdrop-lb-row{display:flex;align-items:center;gap:12px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:12px 16px;margin-bottom:8px;}
+.airdrop-lb-row.me{border-color:var(--purple2);background:rgba(124,58,237,.08);}
+
+@media(max-width:640px){
+  nav{padding:0 16px;}
+  .nav-links{display:none;}
+  .bracket-grid{grid-template-columns:repeat(2,1fr);}
+  .form-row{grid-template-columns:1fr;}
+  .stake-stat-row{grid-template-columns:1fr 1fr;}
+  .hero h1{font-size:2rem;}
+  .card{padding:18px;}
+  .lb-player-stats{display:none;}
+  .wallets-banner{justify-content:center;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">
+    <div class="logo-icon">⚔</div>
+    Block Battle
+  </a>
+  <div class="nav-links">
+    <button class="nav-link active" onclick="showPage('game',this)">Game</button>
+    <button class="nav-link" onclick="showPage('leaderboard',this)">Leaderboard</button>
+    <button class="nav-link" onclick="showPage('airdrop',this)">Airdrop 🪂</button>
+    <button class="nav-link" onclick="showPage('staking',this)">Staking</button>
+    <button class="nav-link" onclick="showPage('dashboard',this)">Dashboard</button>
+  </div>
+  <button class="connect-btn" id="connectBtn" onclick="openModal()">Connect Wallet</button>
+</nav>
+
+<!-- ══ GAME PAGE ══ -->
+<div class="page active" id="page-game">
+  <div class="hero">
+    <div class="hero-coin">
+      <div class="coin-ring">
+        <div class="coin-inner">⚔</div>
+      </div>
+      <div class="coin-dot"></div>
+      <div class="coin-dot"></div>
+      <div class="coin-dot"></div>
+    </div>
+    <h1>Block Battle</h1>
+    <p class="hero-sub">On-chain meme arena. Vote, battle, earn.</p>
+    <div class="hero-badge">Provably Fair</div>
+  </div>
+
+  <div class="round-row">
+    <div class="round-pill"><div class="live-dot"></div><span>Round</span><strong id="roundNumEl">Round #1</strong></div>
+    <div class="timer-pill" id="timerEl">02:00</div>
+  </div>
+
+  <!-- BATTLE CARD -->
+  <div class="card">
+    <div class="card-label">Pick your bet (BTC sats)</div>
+    <div class="bet-tiers" id="betTiers"></div>
+    <div class="card-divider"></div>
+    <div class="card-label">Choose your fighter</div>
+    <div class="fighters-row">
+      <button class="fighter-btn" id="fA" onclick="pickFighter('A')">
+        <div class="fighter-emoji" id="eA">🐸</div>
+        <div class="fighter-name" id="nA">PEPE TO THE MOON</div>
+        <div class="fighter-votes" id="vA">412 votes</div>
+        <div class="fighter-pct up" id="pA">52%</div>
+      </button>
+      <div class="vs-pill">VS</div>
+      <button class="fighter-btn" id="fB" onclick="pickFighter('B')">
+        <div class="fighter-emoji" id="eB">🦍</div>
+        <div class="fighter-name" id="nB">APE STRONG TOGETHER</div>
+        <div class="fighter-votes" id="vB">387 votes</div>
+        <div class="fighter-pct dn" id="pB">48%</div>
+      </button>
+    </div>
+    <div style="margin-bottom:20px">
+      <div class="vote-bar-track"><div class="vote-bar-fill" id="vBar" style="width:52%"></div></div>
+      <div class="vote-bar-labels"><span id="bLA" style="color:var(--green)">🐸 52%</span><span id="bLB" style="color:var(--red)">48% 🦍</span></div>
+    </div>
+    <button class="action-btn" id="voteBtn" onclick="castVote()">Connect wallet to vote</button>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-val" id="sBattles">247</div><div class="stat-key">Battles Fought</div></div>
+    <div class="stat-card"><div class="stat-val" id="sVotes">18,402</div><div class="stat-key">Votes Cast</div></div>
+    <div class="stat-card"><div class="stat-val">4.2 BTC</div><div class="stat-key">Prize Pool</div></div>
+    <div class="stat-card"><div class="stat-val">89</div><div class="stat-key">Legends Minted</div></div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><div class="section-title">Tournament Bracket</div><div class="section-sub">Quarterfinals</div></div>
+    <div class="bracket-grid" id="bracketGrid"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><div class="section-title">Hall of Legends</div><div class="section-sub">All-time champions</div></div>
+    <div class="lb-list" id="leaderboard"></div>
+  </div>
+
+  <div class="feed-card">
+    <div class="feed-head">
+      <div class="feed-title">Live Activity</div>
+      <div style="display:flex;align-items:center;gap:6px;font-size:.75rem;color:var(--green)"><div class="live-dot"></div> On-chain</div>
+    </div>
+    <div class="feed-scroll" id="feedEl"></div>
+  </div>
+
+  <!-- SUBMIT -->
+  <div class="card">
+    <div class="section-head" style="margin-bottom:20px">
+      <div><div class="section-title">Enter the Arena</div><div style="font-size:.8rem;color:var(--muted);margin-top:3px">Submit your meme. Win eternal glory.</div></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Meme Title</label><input class="form-input" id="memeTitle" placeholder="DOGE CONQUERS ALL" maxlength="40"/></div>
+      <div class="form-group"><label>Wallet</label><input class="form-input" id="memeWallet" placeholder="Auto-filled on connect" readonly/></div>
+    </div>
+    <div class="form-group" style="margin-bottom:14px"><label>Choose Fighter Emoji</label><div class="emoji-row" id="emojiPicker">🐸 🦍 🐶 🐱 🚀 💎 🔥 🌙 🐻 🦊 🐉 ⚡ 🎭 💀 🤖 🦄</div></div>
+    <div class="form-group" style="margin-bottom:20px"><label>Battle Cry</label><textarea class="form-textarea" rows="2" id="memeCry" placeholder="Why should your meme WIN?"></textarea></div>
+    <button class="action-btn" onclick="submitMeme()">⚔ Enter the Arena — 0.001 BTC</button>
+  </div>
+</div>
+
+<!-- ══ HISTORY PAGE ══ -->
+<div class="page" id="page-history">
+  <div style="max-width:720px;margin:32px auto 40px;padding:0 20px;position:relative;z-index:1">
+    <div class="section-head" style="margin-bottom:20px"><div class="section-title">Battle History</div><div class="section-sub">Your past fights</div></div>
+    <div class="history-list" id="historyList"></div>
+  </div>
+</div>
+
+<!-- ══ STAKING PAGE ══ -->
+<div class="page" id="page-staking">
+  <div style="max-width:720px;margin:32px auto 0;padding:0 20px;position:relative;z-index:1">
+    <div class="section-head" style="margin-bottom:20px"><div class="section-title">Staking</div><div class="section-sub">Earn rewards by staking BTC</div></div>
+  </div>
+  <div class="card">
+    <div class="stake-stat-row">
+      <div class="stake-stat"><div class="ssv">2.45%</div><div class="ssk">APY</div></div>
+      <div class="stake-stat"><div class="ssv">0.000</div><div class="ssk">Staked BTC</div></div>
+      <div class="stake-stat"><div class="ssv">0.000</div><div class="ssk">Rewards</div></div>
+    </div>
+    <div class="card-divider"></div>
+    <div class="card-label" style="margin-bottom:14px">Stake BTC</div>
+    <div class="stake-input-row">
+      <input class="stake-input" placeholder="Amount in BTC" type="number" step="0.001"/>
+      <button class="stake-btn primary" onclick="showToast('Connect wallet to stake')">Stake</button>
+      <button class="stake-btn secondary" onclick="showToast('Connect wallet to unstake')">Unstake</button>
+    </div>
+    <div style="font-size:.75rem;color:var(--muted)">Minimum: 0.001 BTC · Rewards paid every block</div>
+  </div>
+</div>
+
+<!-- ══ DASHBOARD PAGE ══ -->
+<div class="page" id="page-dashboard">
+  <div style="max-width:720px;margin:0 auto;padding:32px 20px 60px;position:relative;z-index:1">
+
+    <!-- NOT CONNECTED STATE -->
+    <div id="dashLocked" style="text-align:center;padding:60px 20px">
+      <div style="font-size:3rem;margin-bottom:16px">🔒</div>
+      <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.2rem;color:#fff;margin-bottom:8px">Connect your wallet</div>
+      <div style="font-size:.85rem;color:var(--muted);margin-bottom:24px">See your portfolio, earnings, and battle history</div>
+      <button class="action-btn" style="max-width:200px;margin:0 auto;display:block" onclick="openModal()">Connect Wallet</button>
+    </div>
+
+    <!-- CONNECTED STATE -->
+    <div id="dashUnlocked" style="display:none">
+
+      <!-- WALLET HEADER -->
+      <div class="card" style="margin-bottom:16px">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px">
+          <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--pink));display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0">⚔</div>
+          <div style="flex:1">
+            <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;color:#fff" id="pWalletAddr">—</div>
+            <div style="font-size:.75rem;color:var(--muted);margin-top:2px">OPNet · <span id="pNetworkBadge" style="color:var(--cyan)">Testnet</span></div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.3rem;color:#fff" id="pBtcBal">— BTC</div>
+            <div style="font-size:.7rem;color:var(--muted);margin-top:2px">Wallet Balance</div>
+          </div>
+        </div>
+        <div class="card-divider" style="margin:0 0 16px"></div>
+        <!-- PORTFOLIO VALUE BAR -->
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <div style="font-size:.7rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase">Portfolio Value</div>
+          <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;color:var(--green)" id="pPortfolioVal">+0 sats</div>
+        </div>
+        <div style="height:4px;background:var(--border);border-radius:4px;overflow:hidden">
+          <div id="pPortfolioBar" style="height:100%;background:linear-gradient(90deg,var(--purple),var(--green));border-radius:4px;width:0%;transition:width 1s ease"></div>
+        </div>
+      </div>
+
+      <!-- STAT CARDS ROW -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px">
+        <div class="card" style="padding:16px;text-align:center;margin:0">
+          <div style="font-size:1.5rem;margin-bottom:4px">🏆</div>
+          <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.4rem;color:var(--gold)" id="pWins">0</div>
+          <div style="font-size:.65rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:2px">Wins</div>
+        </div>
+        <div class="card" style="padding:16px;text-align:center;margin:0">
+          <div style="font-size:1.5rem;margin-bottom:4px">💀</div>
+          <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.4rem;color:var(--red)" id="pLosses">0</div>
+          <div style="font-size:.65rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:2px">Losses</div>
+        </div>
+        <div class="card" style="padding:16px;text-align:center;margin:0">
+          <div style="font-size:1.5rem;margin-bottom:4px">🗳️</div>
+          <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.4rem;color:var(--cyan)" id="pVotesCast">0</div>
+          <div style="font-size:.65rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:2px">Votes</div>
+        </div>
+        <div class="card" style="padding:16px;text-align:center;margin:0">
+          <div style="font-size:1.5rem;margin-bottom:4px">🎖️</div>
+          <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.4rem;color:var(--purple2)" id="pNFTs">0</div>
+          <div style="font-size:.65rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:2px">NFTs</div>
+        </div>
+      </div>
+
+      <!-- TOKEN BALANCES -->
+      <div class="card" style="margin-bottom:16px">
+        <div class="section-head" style="margin-bottom:16px">
+          <div class="section-title">Token Holdings</div>
+          <div style="font-size:.75rem;color:var(--muted)">OPNet · OP_20</div>
+        </div>
+
+        <!-- BTC ROW -->
+        <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)">
+          <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#f59e0b,#d97706);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0">₿</div>
+          <div style="flex:1">
+            <div style="font-family:'Syne',sans-serif;font-weight:700;color:#fff;font-size:.9rem">Bitcoin</div>
+            <div style="font-size:.72rem;color:var(--muted)">BTC · Native</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-family:'Syne',sans-serif;font-weight:700;color:#fff;font-size:.9rem" id="tBTC">— BTC</div>
+            <div style="font-size:.7rem;color:var(--muted)" id="tBTCusd">$—</div>
+          </div>
+        </div>
+
+        <!-- BB TOKEN ROW -->
+        <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)">
+          <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--pink));display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0">⚔</div>
+          <div style="flex:1">
+            <div style="font-family:'Syne',sans-serif;font-weight:700;color:#fff;font-size:.9rem">Block Battle Token</div>
+            <div style="font-size:.72rem;color:var(--muted)">BBT · OP_20</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-family:'Syne',sans-serif;font-weight:700;color:var(--purple2);font-size:.9rem" id="tBBT">0 BBT</div>
+            <div style="font-size:.7rem;color:var(--green)" id="tBBTchange">+0 this session</div>
+          </div>
+        </div>
+
+        <!-- WINNINGS ROW -->
+        <div style="display:flex;align-items:center;gap:12px;padding:12px 0">
+          <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--green),#059669);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0">💰</div>
+          <div style="flex:1">
+            <div style="font-family:'Syne',sans-serif;font-weight:700;color:#fff;font-size:.9rem">Battle Winnings</div>
+            <div style="font-size:.72rem;color:var(--muted)">Sats earned from votes</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-family:'Syne',sans-serif;font-weight:700;color:var(--green);font-size:.9rem" id="tWinnings">0 sats</div>
+            <div style="font-size:.7rem;color:var(--muted)" id="tWinRounds">0 rounds won</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WIN RATE -->
+      <div class="card" style="margin-bottom:16px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <div style="font-family:'Syne',sans-serif;font-weight:700;color:#fff">Win Rate</div>
+          <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem" id="pWinRate" style="color:var(--green)">—%</div>
+        </div>
+        <div style="height:8px;background:var(--border);border-radius:8px;overflow:hidden;margin-bottom:8px">
+          <div id="pWinRateBar" style="height:100%;background:linear-gradient(90deg,var(--purple),var(--green));border-radius:8px;width:0%;transition:width 1s ease"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted)">
+          <span id="pWinRateLabel">Play more rounds to build your record</span>
+          <span id="pWinRateRounds"></span>
+        </div>
+      </div>
+
+      <!-- RECENT BATTLES -->
+      <div style="margin-bottom:16px">
+        <div class="section-head" style="margin-bottom:12px">
+          <div class="section-title">Recent Battles</div>
+          <div style="font-size:.75rem;color:var(--muted)" id="pBattleCount">0 battles</div>
+        </div>
+        <div id="pBattleList" style="display:flex;flex-direction:column;gap:8px">
+          <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;color:var(--muted);font-size:.85rem">
+            No battles yet — go vote!
+          </div>
+        </div>
+      </div>
+
+      <!-- NFT TROPHIES -->
+      <div>
+        <div class="section-head" style="margin-bottom:12px">
+          <div class="section-title">NFT Trophies</div>
+          <div style="font-size:.75rem;color:var(--muted)">Minted on OPNet</div>
+        </div>
+        <div id="pNFTGrid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
+          <div style="background:var(--bg2);border:1px dashed var(--border);border-radius:12px;padding:20px 10px;text-align:center;color:var(--muted);font-size:.75rem;grid-column:1/-1">
+            Win battles to earn NFT trophies
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end dashUnlocked -->
+  </div>
+</div>
+
+<!-- ══ LEADERBOARD PAGE ══ -->
+<div class="page" id="page-leaderboard">
+  <div class="lb-page-wrap">
+
+    <!-- LIVE STATS BANNER -->
+    <div class="wallets-banner">
+      <div class="wb-stat">
+        <div class="wb-val" id="lbTotalWallets">1,247</div>
+        <div class="wb-key">Wallets Played</div>
+      </div>
+      <div class="wb-divider"></div>
+      <div class="wb-stat">
+        <div class="wb-val" id="lbActiveNow">38</div>
+        <div class="wb-key">Active Now</div>
+      </div>
+      <div class="wb-divider"></div>
+      <div class="wb-stat">
+        <div class="wb-val" id="lbTotalVotes">84,201</div>
+        <div class="wb-key">Total Votes</div>
+      </div>
+      <div class="wb-divider"></div>
+      <div class="wb-stat">
+        <div class="wb-val">12.4 BTC</div>
+        <div class="wb-key">Total Wagered</div>
+      </div>
+    </div>
+
+    <div class="section-head" style="margin-bottom:12px">
+      <div class="section-title">Global Rankings</div>
+      <div style="display:flex;align-items:center;gap:6px;font-size:.75rem;color:var(--green)"><div class="live-dot"></div>Live</div>
+    </div>
+
+    <!-- TABS -->
+    <div class="lb-tabs">
+      <button class="lb-tab active" onclick="switchLbTab('points',this)">🪂 Airdrop Points</button>
+      <button class="lb-tab" onclick="switchLbTab('wins',this)">🏆 Most Wins</button>
+      <button class="lb-tab" onclick="switchLbTab('winnings',this)">💰 Top Earners</button>
+      <button class="lb-tab" onclick="switchLbTab('votes',this)">🗳️ Most Active</button>
+    </div>
+
+    <div id="lbList"></div>
+
+  </div>
+</div>
+
+<!-- ══ AIRDROP PAGE ══ -->
+<div class="page" id="page-airdrop">
+  <div class="airdrop-wrap">
+
+    <div class="airdrop-hero">
+      <div class="airdrop-hero-icon">🪂</div>
+      <div class="airdrop-hero-title">BBT Airdrop</div>
+      <div class="airdrop-hero-sub">Earn points by playing. Top wallets get BBT token airdrop at launch.</div>
+    </div>
+
+    <!-- MY POINTS CARD -->
+    <div class="airdrop-points-card">
+      <div class="ap-label">Your Airdrop Points</div>
+      <div class="ap-value" id="apPoints">0</div>
+      <div class="ap-sub" id="apRank">Connect wallet to start earning</div>
+      <div class="ap-bar-wrap">
+        <div class="ap-bar-labels">
+          <span id="apTierCurrent">—</span>
+          <span id="apTierNext">—</span>
+        </div>
+        <div class="ap-bar-track">
+          <div class="ap-bar-fill" id="apBar" style="width:0%"></div>
+        </div>
+      </div>
+      <div class="ap-tier-label" id="apTierLabel">— Tier</div>
+    </div>
+
+    <!-- POINTS BREAKDOWN -->
+    <div class="section-head" style="margin-bottom:12px">
+      <div class="section-title">How to Earn Points</div>
+    </div>
+    <div class="points-breakdown">
+      <div class="pb-row">
+        <div class="pb-icon">🔗</div>
+        <div class="pb-info">
+          <div class="pb-title">Connect Wallet</div>
+          <div class="pb-desc">One-time bonus for connecting your OP_WALLET</div>
+        </div>
+        <div class="pb-pts">+100 pts</div>
+        <div class="pb-earned" id="ptConnect">— pts</div>
+      </div>
+      <div class="pb-row">
+        <div class="pb-icon">🗳️</div>
+        <div class="pb-info">
+          <div class="pb-title">Vote Each Round</div>
+          <div class="pb-desc">10 points per vote cast in any battle</div>
+        </div>
+        <div class="pb-pts">+10 pts/vote</div>
+        <div class="pb-earned" id="ptVotes">0 pts</div>
+      </div>
+      <div class="pb-row">
+        <div class="pb-icon">🏆</div>
+        <div class="pb-info">
+          <div class="pb-title">Win Battles</div>
+          <div class="pb-desc">25 bonus points for every round you win</div>
+        </div>
+        <div class="pb-pts">+25 pts/win</div>
+        <div class="pb-earned" id="ptWins">0 pts</div>
+      </div>
+      <div class="pb-row">
+        <div class="pb-icon">⚔️</div>
+        <div class="pb-info">
+          <div class="pb-title">Enter the Arena</div>
+          <div class="pb-desc">50 points for submitting your own meme</div>
+        </div>
+        <div class="pb-pts">+50 pts/entry</div>
+        <div class="pb-earned" id="ptEntry">0 pts</div>
+      </div>
+      <div class="pb-row">
+        <div class="pb-icon">🖼️</div>
+        <div class="pb-info">
+          <div class="pb-title">Earn NFT Trophy</div>
+          <div class="pb-desc">200 points per NFT minted from winning</div>
+        </div>
+        <div class="pb-pts">+200 pts/NFT</div>
+        <div class="pb-earned" id="ptNFT">0 pts</div>
+      </div>
+      <div class="pb-row">
+        <div class="pb-icon">👥</div>
+        <div class="pb-info">
+          <div class="pb-title">Refer a Friend</div>
+          <div class="pb-desc">150 points per wallet that joins via your link</div>
+        </div>
+        <div class="pb-pts">+150 pts/ref</div>
+        <div class="pb-earned" id="ptRef">0 pts</div>
+      </div>
+    </div>
+
+    <!-- TIERS -->
+    <div class="section-head" style="margin-bottom:12px">
+      <div class="section-title">Airdrop Tiers</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:24px" id="tierList"></div>
+
+    <!-- REFERRAL -->
+    <div class="referral-card">
+      <div class="section-title" style="margin-bottom:4px">Refer Friends</div>
+      <div style="font-size:.8rem;color:var(--muted);margin-bottom:4px">Share your link — earn 150 pts per wallet that joins</div>
+      <div class="ref-input-row">
+        <div class="ref-input" id="refLink">Connect wallet to get your referral link</div>
+        <button class="ref-copy-btn" onclick="copyRef()">Copy Link</button>
+      </div>
+      <div style="font-size:.72rem;color:var(--muted);margin-top:8px">Referrals: <span style="color:var(--purple2);font-weight:700" id="refCount">0</span> wallets joined via your link</div>
+    </div>
+
+    <!-- AIRDROP LEADERBOARD PREVIEW -->
+    <div class="section-head" style="margin-bottom:12px">
+      <div class="section-title">Top Point Earners</div>
+      <div style="font-size:.75rem;color:var(--muted)">Snapshot daily</div>
+    </div>
+    <div id="airdropLbPreview"></div>
+
+  </div>
+</div>
+<div class="modal-bg" id="walletModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-title">Connect Wallet</div>
+    <div class="modal-sub">OP_WALLET only · OPNet Testnet &amp; Regtest Bitcoin</div>
+    <div class="wallet-option" id="opWalletOpt" onclick="connectOpWallet()">
+      <div class="wo-icon">⚡</div>
+      <div>
+        <div class="wo-name">OP_WALLET</div>
+        <div class="wo-sub" id="opWalletSub">OPNet · Testnet / Regtest only</div>
+      </div>
+    </div>
+    <!-- NETWORK WARNING -->
+    <div id="networkErrMsg" style="display:none;margin-top:12px;padding:12px 14px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.3);border-radius:10px;font-size:.8rem;color:#fbbf24;">
+      ⚠ Wrong network detected. Please switch OP_WALLET to <strong>Testnet</strong> or <strong>Regtest</strong> and try again.
+    </div>
+    <!-- NO WALLET WARNING -->
+    <div id="noWalletMsg" style="display:none;margin-top:12px;padding:12px 14px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:10px;font-size:.8rem;color:#f87171;">
+      OP_WALLET not detected. <a href="https://chromewebstore.google.com/detail/opwallet/pmbjpcmaaladnfpacpmhmnfmpklgbdjb" target="_blank" style="color:var(--purple2)">Install here →</a>
+    </div>
+    <!-- INFO FOOTER -->
+    <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);font-size:.72rem;color:var(--muted);line-height:1.6">
+      🔒 Only <strong style="color:var(--text)">OP_WALLET</strong> is supported.<br>
+      Make sure you are on <strong style="color:var(--cyan)">OPNet Testnet</strong> or <strong style="color:var(--purple2)">Regtest</strong> — Mainnet is not allowed.
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── DATA ──
+const TIERS   = [10,25,50,100,250,500,1000];
+const BATTLES = [
+  {a:{e:'🐸',n:'PEPE TO THE MOON'},  b:{e:'🦍',n:'APE STRONG TOGETHER'}},
+  {a:{e:'🚀',n:'ROCKET WOJAK'},      b:{e:'💎',n:'DIAMOND HANDS'}},
+  {a:{e:'🐶',n:'DOGE SUPREMACY'},    b:{e:'🔥',n:'THIS IS FINE'}},
+  {a:{e:'💀',n:'DEATH BY BEARS'},    b:{e:'🌙',n:'LAMBO OR RAMEN'}},
+];
+const BRACKET = [
+  {e:'🏆',n:'CHAMPION TBD',s:'fighting'},{e:'🚀',n:'MOON MISSION',s:'won'},
+  {e:'💎',n:'DIAMOND HANDS',s:'won'},{e:'🐸',n:'PEPE RISES',s:'fighting'},
+  {e:'🦍',n:'APE TOGETHER',s:'won'},{e:'🐶',n:'DOGE SUPREME',s:'lost'},
+  {e:'🔥',n:'THIS IS FINE',s:'lost'},{e:'💀',n:'DEATH MEME',s:'lost'},
+];
+const LEGENDS = [
+  {e:'🚀',n:'MOON MISSION',c:'op1...7b1e',w:12,v:'4,201'},
+  {e:'💎',n:'DIAMOND HANDS',c:'op1...4c9f',w:9,v:'3,847'},
+  {e:'🐸',n:'PEPE RISES',c:'op1...3f8a',w:7,v:'2,993'},
+  {e:'🦍',n:'APE TOGETHER',c:'op1...9d2c',w:6,v:'2,410'},
+  {e:'🐶',n:'DOGE SUPREME',c:'op1...2a8d',w:5,v:'1,887'},
+];
+const HISTORY = [
+  {t:'win', e:'🚀',title:'MOON MISSION vs 💎 DIAMOND HANDS',meta:'Battle #241 · 2h ago',r:'+250 sats'},
+  {t:'lose',e:'🐸',title:'PEPE RISES vs 🦍 APE TOGETHER',meta:'Battle #238 · 5h ago',r:'-100 sats'},
+  {t:'win', e:'💎',title:'DIAMOND HANDS vs 🔥 THIS IS FINE',meta:'Battle #234 · 1d ago',r:'+500 sats'},
+  {t:'lose',e:'🐶',title:'DOGE SUPREME vs 🌙 LAMBO OR RAMEN',meta:'Battle #229 · 2d ago',r:'-50 sats'},
+];
+const FEED = [
+  {i:'🗳️',m:'<b>op1...3f8a</b> voted for 🐸 PEPE TO THE MOON — Battle #247'},
+  {i:'🏆',m:'<b>🚀 MOON MISSION</b> advances to Semi-Finals! 847 votes vs 421'},
+  {i:'🖼️',m:'<b>DIAMOND HANDS</b> NFT minted — Legend #089 on OPNet'},
+  {i:'⚔️',m:'<b>op1...cc4d</b> entered 🦄 UNICORN DESTROYER — 0.001 BTC'},
+  {i:'🗳️',m:'<b>op1...9d2c</b> voted for 🦍 APE STRONG TOGETHER'},
+  {i:'🏆',m:'<b>🐸 PEPE</b> wins Round 2 by 214 votes'},
+  {i:'⚔️',m:'<b>op1...7f1a</b> entered 🎭 CLOWN MARKET — "When bears cry I buy"'},
+  {i:'🖼️',m:'<b>MOON MISSION</b> Champion NFT sold for 0.42 BTC'},
+];
+
+// ── PERSISTENT STORAGE ──
+const SAVE_KEY = 'block-battle-v1';
+
+function saveState(){
+  try {
+    const data = {
+      portfolio,
+      airdropPtsExtra,
+      roundNum,
+      walletAddress,
+      savedAt: Date.now(),
+    };
+    localStorage.setItem(SAVE_KEY, JSON.stringify(data));
+  } catch(e){ console.warn('[BlockBattle] Save failed', e); }
+}
+
+function loadState(){
+  try {
+    const raw = localStorage.getItem(SAVE_KEY);
+    if(!raw) return;
+    const data = JSON.parse(raw);
+    if(data.portfolio){
+      Object.assign(portfolio, data.portfolio);
+      // Ensure arrays are arrays (guard against corruption)
+      if(!Array.isArray(portfolio.battles)) portfolio.battles = [];
+      if(!Array.isArray(portfolio.nftList))  portfolio.nftList  = [];
+    }
+    if(typeof data.airdropPtsExtra === 'number') airdropPtsExtra = data.airdropPtsExtra;
+    if(typeof data.roundNum === 'number' && data.roundNum > 1) roundNum = data.roundNum;
+  } catch(e){ console.warn('[BlockBattle] Load failed', e); }
+}
+
+function clearSavedState(){
+  localStorage.removeItem(SAVE_KEY);
+  showToast('🗑 Save data cleared');
+}
+
+// Auto-save every 30 seconds as backup
+setInterval(saveState, 30000);
+
+// ── STATE ──
+let walletConnected=false, walletAddress=null, walletBalance=null;
+let selectedTier=100, selectedFighter=null, hasVoted=false;
+let cntA=412, cntB=387, battleIdx=0, timerSecs=2*60, feedIdx=0, roundNum=1;
+const ROUND_DURATION=2*60;
+let selEmoji='🐸';
+
+// ── PORTFOLIO STATE ──
+const portfolio = {
+  wins: 0, losses: 0, votesCast: 0, nfts: 0,
+  bbt: 0, winnings: 0, roundsWon: 0,
+  battles: [],  // {round, emoji, name, side, result, sats}
+  nftList: [],
+};
+
+let airdropPtsExtra = 0; // declare early so loadState can restore it
+
+// ── LOAD SAVED DATA IMMEDIATELY ──
+loadState();
+
+function updatePortfolio(){
+  if(!walletConnected) return;
+
+  // Stats
+  document.getElementById('pWins').textContent       = portfolio.wins;
+  document.getElementById('pLosses').textContent     = portfolio.losses;
+  document.getElementById('pVotesCast').textContent  = portfolio.votesCast;
+  document.getElementById('pNFTs').textContent       = portfolio.nfts;
+
+  // Tokens
+  const btcStr = walletBalance !== null ? walletBalance : '— BTC';
+  document.getElementById('tBTC').textContent        = btcStr;
+  document.getElementById('tBBT').textContent        = portfolio.bbt.toLocaleString() + ' BBT';
+  document.getElementById('tBBTchange').textContent  = (portfolio.bbt > 0 ? '+' : '') + portfolio.bbt + ' this session';
+  document.getElementById('tBBTchange').style.color  = portfolio.bbt >= 0 ? 'var(--green)' : 'var(--red)';
+  document.getElementById('tWinnings').textContent   = portfolio.winnings.toLocaleString() + ' sats';
+  document.getElementById('tWinRounds').textContent  = portfolio.roundsWon + ' rounds won';
+
+  // Portfolio value bar (caps at 100% after 5000 sats)
+  const pct = Math.min(portfolio.winnings / 5000 * 100, 100);
+  document.getElementById('pPortfolioBar').style.width = pct + '%';
+  const netSats = portfolio.winnings - (portfolio.losses * selectedTier);
+  document.getElementById('pPortfolioVal').textContent = (netSats >= 0 ? '+' : '') + netSats.toLocaleString() + ' sats';
+  document.getElementById('pPortfolioVal').style.color = netSats >= 0 ? 'var(--green)' : 'var(--red)';
+
+  // Win rate
+  const total = portfolio.wins + portfolio.losses;
+  const wr = total > 0 ? Math.round(portfolio.wins / total * 100) : 0;
+  document.getElementById('pWinRate').textContent    = total > 0 ? wr + '%' : '—%';
+  document.getElementById('pWinRate').style.color    = wr >= 50 ? 'var(--green)' : 'var(--red)';
+  document.getElementById('pWinRateBar').style.width = wr + '%';
+  document.getElementById('pWinRateBar').style.background = wr >= 50
+    ? 'linear-gradient(90deg,var(--purple),var(--green))'
+    : 'linear-gradient(90deg,var(--purple),var(--red))';
+  document.getElementById('pWinRateLabel').textContent = total > 0
+    ? (wr >= 50 ? '🔥 You\'re on fire!' : '📈 Keep going!')
+    : 'Play more rounds to build your record';
+  document.getElementById('pWinRateRounds').textContent = total > 0 ? `${portfolio.wins}W / ${portfolio.losses}L` : '';
+
+  // Battle list
+  const bc = document.getElementById('pBattleCount');
+  bc.textContent = portfolio.battles.length + ' battle' + (portfolio.battles.length !== 1 ? 's' : '');
+  const bl = document.getElementById('pBattleList');
+  if(portfolio.battles.length === 0){
+    bl.innerHTML = `<div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;color:var(--muted);font-size:.85rem">No battles yet — go vote!</div>`;
+  } else {
+    bl.innerHTML = portfolio.battles.slice().reverse().map(b => `
+      <div style="display:flex;align-items:center;gap:12px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:12px 16px">
+        <div style="width:36px;height:36px;border-radius:10px;background:${b.result==='win'?'rgba(16,185,129,.15)':'rgba(239,68,68,.15)'};display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0">${b.emoji}</div>
+        <div style="flex:1">
+          <div style="font-family:'Syne',sans-serif;font-weight:600;font-size:.85rem;color:#fff">${b.name}</div>
+          <div style="font-size:.7rem;color:var(--muted);margin-top:2px">Round #${b.round} · ${b.sats} sats bet</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:.88rem;color:${b.result==='win'?'var(--green)':'var(--red)'}">
+            ${b.result==='win'?'+'+Math.round(b.sats*1.8):'-'+b.sats} sats
+          </div>
+          <div style="font-size:.65rem;color:var(--muted);margin-top:2px;text-transform:uppercase;letter-spacing:1px">${b.result}</div>
+        </div>
+      </div>`).join('');
+  }
+
+  // NFT grid
+  const ng = document.getElementById('pNFTGrid');
+  if(portfolio.nftList.length === 0){
+    ng.innerHTML = `<div style="background:var(--bg2);border:1px dashed var(--border);border-radius:12px;padding:20px 10px;text-align:center;color:var(--muted);font-size:.75rem;grid-column:1/-1">Win battles to earn NFT trophies</div>`;
+  } else {
+    ng.innerHTML = portfolio.nftList.map(n => `
+      <div style="background:var(--bg2);border:1px solid var(--purple);border-radius:12px;padding:14px 8px;text-align:center">
+        <div style="font-size:2rem;margin-bottom:4px">${n.emoji}</div>
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:.65rem;color:var(--purple2)">#${n.id}</div>
+        <div style="font-size:.6rem;color:var(--muted);margin-top:2px">${n.name}</div>
+      </div>`).join('');
+  }
+}
+
+// ── LEADERBOARD DATA (simulated global players) ──
+const GLOBAL_PLAYERS = [
+  {addr:'op1...9f3a',avatar:'🦊',wins:47,losses:21,votes:312,winnings:84200,points:6840},
+  {addr:'op1...2c8b',avatar:'🐉',wins:39,losses:18,votes:274,winnings:71500,points:5720},
+  {addr:'op1...7e1d',avatar:'🦁',wins:35,losses:24,votes:251,winnings:63000,points:5100},
+  {addr:'op1...4a9c',avatar:'🐺',wins:31,losses:29,votes:228,winnings:54800,points:4430},
+  {addr:'op1...5b6f',avatar:'🦅',wins:28,losses:22,votes:198,winnings:48300,points:3980},
+  {addr:'op1...8d2e',avatar:'🐯',wins:24,losses:31,votes:177,winnings:39200,points:3340},
+  {addr:'op1...1c7a',avatar:'🦋',wins:20,losses:25,votes:154,winnings:31600,points:2780},
+  {addr:'op1...6f4b',avatar:'🐸',wins:17,losses:28,votes:133,winnings:24100,points:2210},
+  {addr:'op1...3e8d',avatar:'🦄',wins:14,losses:31,votes:112,winnings:18400,points:1760},
+  {addr:'op1...0a5c',avatar:'🐋',wins:11,losses:34,votes:89, winnings:13200,points:1340},
+];
+
+let lbTab = 'points';
+
+function switchLbTab(tab, el){
+  lbTab = tab;
+  document.querySelectorAll('.lb-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  renderLbList();
+}
+
+function renderLbList(){
+  // Build list — inject user row if connected
+  let players = [...GLOBAL_PLAYERS];
+  if(walletConnected){
+    const userPts = calcAirdropPoints();
+    const userRow = {
+      addr: walletAddress.slice(0,6)+'...'+walletAddress.slice(-4),
+      avatar:'⚔',
+      wins: portfolio.wins,
+      losses: portfolio.losses,
+      votes: portfolio.votesCast,
+      winnings: portfolio.winnings,
+      points: userPts,
+      isMe: true
+    };
+    players.push(userRow);
+  }
+
+  // Sort by current tab
+  const sortKey = {points:'points',wins:'wins',winnings:'winnings',votes:'votes'}[lbTab];
+  players.sort((a,b)=>b[sortKey]-a[sortKey]);
+
+  const valFn = {
+    points: p=>`<div class="lb-stat-chip"><div class="lb-stat-chip-val" style="color:var(--purple2)">${p.points.toLocaleString()}</div><div class="lb-stat-chip-key">points</div></div>`,
+    wins:   p=>`<div class="lb-stat-chip"><div class="lb-stat-chip-val" style="color:var(--gold)">${p.wins}W</div><div class="lb-stat-chip-key">${p.losses}L</div></div>`,
+    winnings:p=>`<div class="lb-stat-chip"><div class="lb-stat-chip-val" style="color:var(--green)">${(p.winnings/1000).toFixed(1)}k</div><div class="lb-stat-chip-key">sats</div></div>`,
+    votes:  p=>`<div class="lb-stat-chip"><div class="lb-stat-chip-val" style="color:var(--cyan)">${p.votes}</div><div class="lb-stat-chip-key">votes</div></div>`,
+  }[lbTab];
+
+  const posClass = ['p1','p2','p3'];
+  const posIcon  = ['🥇','🥈','🥉'];
+
+  document.getElementById('lbList').innerHTML = players.map((p,i)=>`
+    <div class="lb-global-row${p.isMe?' me':''}">
+      <div class="lb-pos-badge ${i<3?posClass[i]:'pn'}">${i<3?posIcon[i]:i+1}</div>
+      <div class="lb-avatar" style="background:${p.isMe?'linear-gradient(135deg,var(--purple),var(--pink))':'var(--bg3)'}">
+        ${p.avatar}
+      </div>
+      <div class="lb-player-info">
+        <div class="lb-player-addr">${p.isMe?'<span style="color:var(--purple2)">'+p.addr+' (You)</span>':p.addr}</div>
+        <div class="lb-player-sub">${p.votes} votes · ${p.wins}W ${p.losses}L</div>
+      </div>
+      <div class="lb-player-stats">
+        ${valFn(p)}
+        <div class="lb-stat-chip">
+          <div class="lb-stat-chip-val">${getTierName(p.points)}</div>
+          <div class="lb-stat-chip-key">tier</div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+// ── AIRDROP POINTS SYSTEM ──
+const AIRDROP_TIERS = [
+  {name:'Bronze',  min:0,    max:999,  alloc:'1%',  color:'#cd7f32', icon:'🥉'},
+  {name:'Silver',  min:1000, max:2499, alloc:'5%',  color:'#94a3b8', icon:'🥈'},
+  {name:'Gold',    min:2500, max:4999, alloc:'14%', color:'#f59e0b', icon:'🥇'},
+  {name:'Diamond', min:5000, max:9999, alloc:'30%', color:'#22d3ee', icon:'💎'},
+  {name:'Legend',  min:10000,max:Infinity,alloc:'50%',color:'#9d5ff3',icon:'👑'},
+];
+// Can't use CSS vars in JS objects, use hex instead
+function getTierColor(pts){
+  if(pts>=10000) return '#9d5ff3';
+  if(pts>=5000)  return '#22d3ee';
+  if(pts>=2500)  return '#f59e0b';
+  if(pts>=1000)  return '#94a3b8';
+  return '#cd7f32';
+}
+function getTierName(pts){
+  if(pts>=10000) return 'Legend';
+  if(pts>=5000)  return 'Diamond';
+  if(pts>=2500)  return 'Gold';
+  if(pts>=1000)  return 'Silver';
+  return 'Bronze';
+}
+function getTierNext(pts){
+  if(pts>=10000) return {name:'Legend',min:10000,max:Infinity};
+  if(pts>=5000)  return {name:'Legend',min:10000};
+  if(pts>=2500)  return {name:'Diamond',min:5000};
+  if(pts>=1000)  return {name:'Gold',min:2500};
+  return {name:'Silver',min:1000};
+}
+
+let airdropPtsExtra = 0; // from referrals & entries
+
+function calcAirdropPoints(){
+  const connectPts = walletConnected ? 100 : 0;
+  const votePts    = portfolio.votesCast * 10;
+  const winPts     = portfolio.wins * 25;
+  const nftPts     = portfolio.nfts * 200;
+  return connectPts + votePts + winPts + nftPts + airdropPtsExtra;
+}
+
+function updateAirdropUI(){
+  const pts = calcAirdropPoints();
+  const tierName  = getTierName(pts);
+  const tierColor = getTierColor(pts);
+  const next      = getTierNext(pts);
+
+  document.getElementById('apPoints').textContent = pts.toLocaleString();
+  document.getElementById('apPoints').style.color  = tierColor;
+
+  if(walletConnected){
+    // Find rank in global list
+    const allPts = [...GLOBAL_PLAYERS.map(p=>p.points), pts].sort((a,b)=>b-a);
+    const rank   = allPts.indexOf(pts)+1;
+    document.getElementById('apRank').textContent = `Rank #${rank} globally · ${tierName} Tier`;
+  } else {
+    document.getElementById('apRank').textContent = 'Connect wallet to start earning';
+  }
+
+  // Progress bar to next tier
+  const isMax = pts >= 10000;
+  const prevMin = pts>=10000?10000: pts>=5000?5000: pts>=2500?2500: pts>=1000?1000: 0;
+  const nextMin = isMax ? 10000 : next.min;
+  const pct = isMax ? 100 : Math.min(((pts-prevMin)/(nextMin-prevMin))*100, 100);
+  document.getElementById('apBar').style.width = pct+'%';
+  document.getElementById('apBar').style.background = `linear-gradient(90deg,${tierColor},${tierColor}aa)`;
+  document.getElementById('apTierCurrent').textContent = tierName+' ('+prevMin.toLocaleString()+' pts)';
+  document.getElementById('apTierNext').textContent    = isMax ? '👑 MAX TIER' : next.name+' ('+nextMin.toLocaleString()+' pts)';
+  document.getElementById('apTierLabel').textContent   = tierName+' Tier';
+  document.getElementById('apTierLabel').style.color   = tierColor;
+
+  // Breakdown earned
+  const connected = walletConnected;
+  document.getElementById('ptConnect').textContent = connected?'100 pts':'0 pts';
+  document.getElementById('ptConnect').className   = 'pb-earned '+(connected?'done':'todo');
+  document.getElementById('ptVotes').textContent   = (portfolio.votesCast*10)+' pts';
+  document.getElementById('ptVotes').className     = 'pb-earned '+(portfolio.votesCast>0?'done':'todo');
+  document.getElementById('ptWins').textContent    = (portfolio.wins*25)+' pts';
+  document.getElementById('ptWins').className      = 'pb-earned '+(portfolio.wins>0?'done':'todo');
+  document.getElementById('ptNFT').textContent     = (portfolio.nfts*200)+' pts';
+  document.getElementById('ptNFT').className       = 'pb-earned '+(portfolio.nfts>0?'done':'todo');
+  document.getElementById('ptEntry').textContent   = airdropPtsExtra > 0 ? airdropPtsExtra+'+ pts' : '0 pts';
+  document.getElementById('ptRef').textContent     = '0 pts';
+
+  // Referral link
+  if(walletConnected){
+    document.getElementById('refLink').textContent = window.location.origin + '/?ref=' + walletAddress.slice(-8);
+  }
+
+  // Render tier list
+  const TIERS_DATA = [
+    {name:'Bronze',  icon:'🥉', min:0,    max:999,  alloc:'1%',  desc:'Early adopter reward', color:'#cd7f32'},
+    {name:'Silver',  icon:'🥈', min:1000, max:2499, alloc:'5%',  desc:'Active voter bonus',    color:'#94a3b8'},
+    {name:'Gold',    icon:'🥇', min:2500, max:4999, alloc:'14%', desc:'Battle champion share', color:'#f59e0b'},
+    {name:'Diamond', icon:'💎', min:5000, max:9999, alloc:'30%', desc:'Elite warrior reward',  color:'#22d3ee'},
+    {name:'Legend',  icon:'👑', min:10000,max:'∞',  alloc:'50%', desc:'Hall of Legends share', color:'#9d5ff3'},
+  ];
+  document.getElementById('tierList').innerHTML = TIERS_DATA.map(t=>{
+    const isActive = tierName === t.name;
+    return `
+    <div style="display:flex;align-items:center;gap:14px;background:var(--bg2);border:1px solid ${isActive?t.color:'var(--border)'};border-radius:12px;padding:14px 18px;${isActive?'box-shadow:0 0 20px '+t.color+'33;':''}">
+      <div style="font-size:1.4rem">${t.icon}</div>
+      <div style="flex:1">
+        <div style="font-family:'Syne',sans-serif;font-weight:700;color:${t.color};font-size:.9rem">${t.name} ${isActive?'<span style="font-size:.65rem;background:'+t.color+'22;padding:2px 7px;border-radius:4px;color:'+t.color+'">YOU ARE HERE</span>':''}</div>
+        <div style="font-size:.7rem;color:var(--muted);margin-top:2px">${t.min.toLocaleString()}${t.max==='∞'?' + ':' – '+t.max.toLocaleString()+' '}pts · ${t.desc}</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;color:${t.color}">${t.alloc}</div>
+        <div style="font-size:.65rem;color:var(--muted);margin-top:1px">of supply</div>
+      </div>
+    </div>`}).join('');
+
+  // Airdrop leaderboard preview
+  const combined = [...GLOBAL_PLAYERS];
+  if(walletConnected) combined.push({addr:walletAddress.slice(0,6)+'...'+walletAddress.slice(-4),avatar:'⚔',points:pts,isMe:true});
+  combined.sort((a,b)=>b.points-a.points);
+  document.getElementById('airdropLbPreview').innerHTML = combined.slice(0,8).map((p,i)=>`
+    <div class="airdrop-lb-row${p.isMe?' me':''}">
+      <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:.9rem;width:28px;color:${i<3?['var(--gold)','#94a3b8','#cd7f32'][i]:'var(--muted)'};">${i+1}</div>
+      <div style="font-size:1.1rem">${p.avatar}</div>
+      <div style="flex:1;font-family:'Syne',sans-serif;font-size:.85rem;color:${p.isMe?'var(--purple2)':'#fff'}">${p.addr}${p.isMe?' (You)':''}</div>
+      <div style="font-family:'Syne',sans-serif;font-weight:700;color:${getTierColor(p.points)};font-size:.85rem">${p.points.toLocaleString()} pts</div>
+      <div style="font-size:.75rem;margin-left:8px;color:var(--muted)">${getTierName(p.points)}</div>
+    </div>`).join('');
+}
+
+function copyRef(){
+  if(!walletConnected){showToast('Connect wallet first!');return;}
+  const link = window.location.origin+'/?ref='+walletAddress.slice(-8);
+  navigator.clipboard.writeText(link).then(()=>showToast('Referral link copied!')).catch(()=>showToast('Link: '+link));
+}
+
+// Live leaderboard counter animation
+function tickLbCounters(){
+  const tw = document.getElementById('lbTotalWallets');
+  const an = document.getElementById('lbActiveNow');
+  const tv = document.getElementById('lbTotalVotes');
+  if(tw){ const v=parseInt(tw.textContent.replace(',','')); if(Math.random()>.85) tw.textContent=(v+1).toLocaleString(); }
+  if(an){ const v=parseInt(an.textContent); an.textContent=Math.max(20,v+Math.floor(Math.random()*3)-1); }
+  if(tv){ const v=parseInt(tv.textContent.replace(',','')); tv.textContent=(v+Math.floor(Math.random()*3)).toLocaleString(); }
+}
+
+// ── NAV ──
+function showPage(name,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
+  if(el) el.classList.add('active');
+}
+
+// ── TIERS ──
+function renderTiers(){
+  document.getElementById('betTiers').innerHTML = TIERS.map((t,i)=>{
+    const layers = Math.min(i+1,4);
+    const h = 18+layers*8;
+    let html = `<div class="tier${t===selectedTier?' selected':''}" onclick="selTier(${t},this)" style="padding-top:4px">
+      <div class="coin-stack" style="height:${h}px">`;
+    if(layers>=1) html+=`<div class="cl cl1" style="bottom:0"></div>`;
+    if(layers>=2) html+=`<div class="cl cl2" style="bottom:7px"></div>`;
+    if(layers>=3) html+=`<div class="cl cl3" style="bottom:14px"></div>`;
+    html+=`<div class="cl cl4" style="bottom:${(layers-1)*7}px"><span>BB</span></div>`;
+    html+=`</div><div class="tier-amt">${t>=1000?'1K':t}</div></div>`;
+    return html;
+  }).join('');
+}
+function selTier(t,el){
+  selectedTier=t;
+  document.querySelectorAll('.tier').forEach(x=>x.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+// ── FIGHTERS ──
+function pickFighter(s){
+  if(!walletConnected){openModal();return;}
+  if(hasVoted){showToast('Already voted this round!');return;}
+  selectedFighter=s;
+  document.getElementById('fA').className='fighter-btn'+(s==='A'?' picked-a':'');
+  document.getElementById('fB').className='fighter-btn'+(s==='B'?' picked-b':'');
+  const nm = s==='A'?document.getElementById('nA').textContent:document.getElementById('nB').textContent;
+  document.getElementById('voteBtn').textContent=`Vote ${nm} — ${selectedTier} sats`;
+}
+
+function castVote(){
+  if(!walletConnected){openModal();return;}
+  if(!selectedFighter){showToast('Pick a fighter first!');return;}
+  if(hasVoted){showToast('Already voted!');return;}
+  hasVoted=true;
+
+  // Simulate win/loss (50/50)
+  const won = Math.random() > 0.5;
+  const memeEmoji = selectedFighter==='A' ? document.getElementById('eA').textContent : document.getElementById('eB').textContent;
+  const memeName  = selectedFighter==='A' ? document.getElementById('nA').textContent : document.getElementById('nB').textContent;
+
+  if(selectedFighter==='A') cntA+=Math.floor(Math.random()*60)+40;
+  else                       cntB+=Math.floor(Math.random()*60)+40;
+  updateBars();
+
+  const btn=document.getElementById('voteBtn');
+  btn.textContent='✓ Vote recorded on-chain'; btn.disabled=true;
+
+  // Track in portfolio
+  portfolio.votesCast++;
+  if(won){
+    portfolio.wins++;
+    portfolio.roundsWon++;
+    portfolio.winnings += Math.round(selectedTier * 1.8);
+    portfolio.bbt += Math.floor(selectedTier / 10);
+    // Random chance to mint NFT on win
+    if(Math.random() > 0.6 && portfolio.nftList.length < 8){
+      portfolio.nfts++;
+      portfolio.nftList.push({emoji: memeEmoji, name: memeName, id: 100 + portfolio.nfts});
+      addFeed('🖼️', `<b>You</b> earned NFT Trophy #${100 + portfolio.nfts} — ${memeEmoji} ${memeName}!`);
+    }
+  } else {
+    portfolio.losses++;
+  }
+
+  portfolio.battles.push({round: roundNum, emoji: memeEmoji, name: memeName, side: selectedFighter, result: won ? 'win' : 'lose', sats: selectedTier});
+
+  addFeed('🗳️',`<b>You</b> voted for ${memeEmoji} ${memeName} — ${won?'<span style="color:var(--green)">WON +'+Math.round(selectedTier*1.8)+' sats</span>':'<span style="color:var(--red)">LOST</span>'}`);
+  showToast(won ? `🏆 You won +${Math.round(selectedTier*1.8)} sats!` : '💀 Better luck next round!');
+
+  updatePortfolio();
+  updateAirdropUI();
+  renderLbList();
+  saveState();
+}
+
+function updateBars(){
+  const tot=cntA+cntB||1, pA=Math.round(cntA/tot*100), pB=100-pA;
+  document.getElementById('vBar').style.width=pA+'%';
+  document.getElementById('pA').textContent=pA+'%';
+  document.getElementById('pB').textContent=pB+'%';
+  document.getElementById('vA').textContent=cntA+' votes';
+  document.getElementById('vB').textContent=cntB+' votes';
+  document.getElementById('bLA').textContent=document.getElementById('eA').textContent+' '+pA+'%';
+  document.getElementById('bLB').textContent=pB+'% '+document.getElementById('eB').textContent;
+}
+
+// ── SUBMIT ──
+function submitMeme(){
+  if(!walletConnected){openModal();return;}
+  const t=document.getElementById('memeTitle').value.trim();
+  if(!t){showToast('Give your meme a title!');return;}
+  addFeed('⚔️',`<b>${walletAddress?.slice(0,8)||'You'}</b> entered ${selEmoji} ${t.toUpperCase()}`);
+  showToast('⚔ '+t.toUpperCase()+' entered the arena! +50 pts');
+  airdropPtsExtra += 50;
+  document.getElementById('memeTitle').value='';
+  document.getElementById('memeCry').value='';
+  updateAirdropUI();
+  renderLbList();
+  saveState();
+}
+
+// ── BRACKET ──
+function renderBracket(){
+  document.getElementById('bracketGrid').innerHTML=BRACKET.map(b=>`
+    <div class="bracket-item ${b.s}">
+      <div class="bi-emoji">${b.e}</div>
+      <div class="bi-name">${b.n}</div>
+      <div class="bi-status ${b.s}">${b.s}</div>
+    </div>`).join('');
+}
+
+// ── LEADERBOARD ──
+function renderLeaderboard(){
+  const rc=['r1','r2','r3','rn','rn'];
+  document.getElementById('leaderboard').innerHTML=LEGENDS.map((l,i)=>`
+    <div class="lb-item">
+      <div class="lb-rank ${rc[i]}">${i+1}</div>
+      <div class="lb-emoji">${l.e}</div>
+      <div class="lb-info"><div class="lb-name">${l.n}</div><div class="lb-creator">${l.c}</div></div>
+      <div class="lb-right"><div class="lb-wins">${l.w}W</div><div class="lb-votes">${l.v} votes</div></div>
+    </div>`).join('');
+}
+
+// ── HISTORY ──
+function renderHistory(){
+  document.getElementById('historyList').innerHTML=HISTORY.map(h=>`
+    <div class="history-item">
+      <div class="hi-icon ${h.t}">${h.e}</div>
+      <div class="hi-info"><div class="hi-title">${h.title}</div><div class="hi-meta">${h.meta}</div></div>
+      <div class="hi-result ${h.t}">${h.r}</div>
+    </div>`).join('');
+}
+
+// ── EMOJI PICKER ──
+function renderEmoji(){
+  const p=document.getElementById('emojiPicker');
+  const es=p.textContent.trim().split(/\s+/);
+  p.innerHTML=es.map(e=>`<span class="emoji-pick${e===selEmoji?' chosen':''}" onclick="pickEmoji(this,'${e}')">${e}</span>`).join('');
+}
+function pickEmoji(el,e){
+  selEmoji=e;
+  document.querySelectorAll('.emoji-pick').forEach(x=>x.classList.remove('chosen'));
+  el.classList.add('chosen');
+}
+
+// ── FEED ──
+function addFeed(icon,msg){
+  const f=document.getElementById('feedEl');
+  const now=new Date().toLocaleTimeString('en-US',{hour12:false,hour:'2-digit',minute:'2-digit'});
+  const el=document.createElement('div');
+  el.className='feed-item';
+  el.innerHTML=`<div class="feed-icon">${icon}</div><div class="feed-body">${msg}</div><div class="feed-time">${now}</div>`;
+  f.insertBefore(el,f.firstChild);
+  if(f.children.length>30) f.removeChild(f.lastChild);
+}
+function autoFeed(){
+  const e=FEED[feedIdx%FEED.length]; addFeed(e.i,e.m); feedIdx++;
+  cntA+=Math.floor(Math.random()*6); cntB+=Math.floor(Math.random()*5); updateBars();
+  const v=parseInt(document.getElementById('sVotes').textContent.replace(',',''));
+  document.getElementById('sVotes').textContent=(v+Math.floor(Math.random()*4+1)).toLocaleString();
+}
+
+// ── TIMER ──
+function tickTimer(){
+  if(timerSecs<=0){
+    // New round
+    roundNum++;
+    timerSecs=ROUND_DURATION;
+    battleIdx=(battleIdx+1)%BATTLES.length;
+    const b=BATTLES[battleIdx];
+    document.getElementById('eA').textContent=b.a.e; document.getElementById('nA').textContent=b.a.n;
+    document.getElementById('eB').textContent=b.b.e; document.getElementById('nB').textContent=b.b.n;
+    hasVoted=false; selectedFighter=null;
+    cntA=Math.floor(Math.random()*300)+100; cntB=Math.floor(Math.random()*300)+100; updateBars();
+    document.getElementById('fA').className='fighter-btn'; document.getElementById('fB').className='fighter-btn';
+    const btn=document.getElementById('voteBtn'); btn.disabled=false;
+    btn.textContent=walletConnected?'Pick a fighter to vote':'Connect wallet to vote';
+    updateRoundDisplay();
+    addFeed('🔔',`<b>Round ${roundNum}</b> started — new battle begins!`);
+    showToast(`⚔ Round ${roundNum} — FIGHT!`);
+  }
+  timerSecs--;
+  const m=Math.floor(timerSecs/60).toString().padStart(2,'0'), s=(timerSecs%60).toString().padStart(2,'0');
+  document.getElementById('timerEl').textContent=m+':'+s;
+  // Flash red when under 10 seconds
+  document.getElementById('timerEl').style.color=timerSecs<=10?'var(--red)':'var(--gold)';
+}
+
+function updateRoundDisplay(){
+  document.getElementById('roundNumEl').textContent='Round #'+roundNum;
+}
+
+// ── WALLET ──
+function openModal(){document.getElementById('walletModal').classList.add('open');}
+function closeModal(){document.getElementById('walletModal').classList.remove('open');}
+document.getElementById('walletModal').addEventListener('click',e=>{if(e.target===document.getElementById('walletModal'))closeModal();});
+
+// ─────────────────────────────────────────────
+// WALLET — OP_WALLET ONLY (window.unisat injected by OP_WALLET extension)
+// ALLOWED NETWORKS: testnet, regtest
+// BLOCKED: livenet / mainnet
+// ─────────────────────────────────────────────
+const ALLOWED_NETWORKS = ['testnet', 'regtest', 'signet'];
+
+function isAllowedNetwork(net){
+  if(!net) return false;
+  const n = net.toLowerCase();
+  return ALLOWED_NETWORKS.some(a => n.includes(a));
+}
+
+function networkLabel(net){
+  if(!net) return 'Unknown';
+  const n = net.toLowerCase();
+  if(n.includes('regtest')) return 'Regtest';
+  if(n.includes('signet'))  return 'Signet';
+  if(n.includes('test'))    return 'Testnet';
+  if(n.includes('live')||n.includes('main')) return 'Mainnet';
+  return net;
+}
+
+function waitForProvider(ms=3000){
+  return new Promise(resolve=>{
+    // OP_WALLET injects window.unisat (UniSat-forked API)
+    if(window.unisat){resolve(window.unisat);return;}
+    if(window.opnet) {resolve(window.opnet);return;}
+    const start=Date.now();
+    const t=setInterval(()=>{
+      if(window.unisat){clearInterval(t);resolve(window.unisat);return;}
+      if(window.opnet) {clearInterval(t);resolve(window.opnet);return;}
+      if(Date.now()-start>ms){clearInterval(t);resolve(null);}
+    },100);
+  });
+}
+
+async function connectOpWallet(){
+  const opt    = document.getElementById('opWalletOpt');
+  const subEl  = document.getElementById('opWalletSub');
+  const netErr = document.getElementById('networkErrMsg');
+  const noWal  = document.getElementById('noWalletMsg');
+
+  // Reset error states
+  netErr.style.display='none';
+  noWal.style.display='none';
+  opt.style.opacity='0.5';
+  opt.style.pointerEvents='none';
+  subEl.textContent='Looking for OP_WALLET...';
+
+  const provider = await waitForProvider(3000);
+
+  if(!provider){
+    opt.style.opacity=''; opt.style.pointerEvents='';
+    subEl.textContent='OPNet · Testnet / Regtest only';
+    noWal.style.display='block';
+    showToast('OP_WALLET not found — install the extension');
+    return;
+  }
+
+  subEl.textContent='Checking network...';
+
+  // ── NETWORK CHECK BEFORE REQUESTING ACCOUNTS ──
+  let network = '';
+  try{
+    network = await provider.getNetwork() || '';
+  }catch(_){}
+
+  if(!isAllowedNetwork(network)){
+    opt.style.opacity=''; opt.style.pointerEvents='';
+    subEl.textContent='OPNet · Testnet / Regtest only';
+    netErr.style.display='block';
+    showToast(`⚠ Switch to Testnet or Regtest — ${networkLabel(network)} not allowed`);
+    console.warn('[Block Battle] Blocked network:', network);
+    return;
+  }
+
+  subEl.textContent='Awaiting approval in OP_WALLET...';
+
+  try{
+    const accounts = await provider.requestAccounts();
+    if(!accounts?.length) throw new Error('No accounts returned');
+    await onConnected(accounts[0], provider, network);
+    closeModal();
+  }catch(err){
+    opt.style.opacity=''; opt.style.pointerEvents='';
+    subEl.textContent='OPNet · Testnet / Regtest only';
+    const msg=(err?.message||'').toLowerCase();
+    if(msg.includes('cancel')||msg.includes('reject')||msg.includes('denied')){
+      showToast('Connection rejected by user');
+    } else {
+      showToast('Error: '+(err?.message||'unknown').slice(0,50));
+      console.error('[Block Battle] Wallet error:', err);
+    }
+  }
+}
+
+async function onConnected(address, provider, knownNetwork){
+  walletConnected=true; walletAddress=address;
+  const short=address.slice(0,6)+'...'+address.slice(-4);
+
+  // Get balance
+  let bal='';
+  try{
+    const b=await provider.getBalance();
+    if(b?.total!==undefined){ bal=(b.total/1e8).toFixed(6)+' BTC'; walletBalance=bal; }
+  }catch(_){}
+
+  // Get/confirm network
+  let network = knownNetwork || '';
+  if(!network){ try{ network=await provider.getNetwork()||''; }catch(_){} }
+  const netName = networkLabel(network);
+
+  // Show network badge in nav button
+  const btn=document.getElementById('connectBtn');
+  btn.className='connect-btn connected';
+  btn.innerHTML=`<div class="wallet-dot-nav"></div>${short} <span style="font-size:.7rem;opacity:.6">[${netName}]</span>`;
+  btn.onclick=()=>{ showPage('dashboard', document.querySelectorAll('.nav-link')[4]); };
+
+  document.getElementById('memeWallet').value=address;
+  if(!hasVoted) document.getElementById('voteBtn').textContent='Pick a fighter to vote';
+
+  // Show portfolio
+  document.getElementById('dashLocked').style.display='none';
+  document.getElementById('dashUnlocked').style.display='block';
+  document.getElementById('pWalletAddr').textContent=short;
+  document.getElementById('pBtcBal').textContent=bal||'— BTC';
+  if(bal) document.getElementById('tBTC').textContent=bal;
+
+  // Network badge in dashboard wallet card
+  const netBadge=document.getElementById('pNetworkBadge');
+  if(netBadge){
+    netBadge.textContent=netName;
+    netBadge.style.color=network.includes('regtest')?'var(--purple2)':'var(--cyan)';
+  }
+
+  updatePortfolio();
+  updateAirdropUI();
+  renderLbList();
+  addFeed('⚡',`<b>${short}</b> connected OP_WALLET on ${netName}`);
+  showToast(`⚡ Connected on ${netName}!`);
+  saveState();
+
+  // ── LISTENERS — re-check network on every change ──
+  try{
+    provider.on('accountsChanged', accs=>{
+      if(!accs?.length) disconnect();
+      else onConnected(accs[0], provider, '');
+    });
+    provider.on('networkChanged', async newNet=>{
+      if(!isAllowedNetwork(newNet)){
+        disconnect();
+        showToast(`⚠ Switched to ${networkLabel(newNet)} — not allowed. Disconnected.`);
+        document.getElementById('networkErrMsg').style.display='block';
+      } else {
+        await onConnected(walletAddress, provider, newNet);
+        showToast(`Network switched to ${networkLabel(newNet)}`);
+      }
+    });
+  }catch(_){}
+}
+
+function disconnect(){
+  walletConnected=false; walletAddress=null; walletBalance=null;
+  const btn=document.getElementById('connectBtn');
+  btn.className='connect-btn'; btn.innerHTML='Connect Wallet'; btn.onclick=openModal;
+  document.getElementById('memeWallet').value='';
+  document.getElementById('voteBtn').textContent='Connect wallet to vote';
+  document.getElementById('dashLocked').style.display='block';
+  document.getElementById('dashUnlocked').style.display='none';
+}
+
+// HTTPS + auto-reconnect on load
+window.addEventListener('load',async()=>{
+  const proto=window.location.protocol, local=['localhost','127.0.0.1'].includes(window.location.hostname);
+  if(proto==='http:'&&!local){window.location.replace('https://'+window.location.host+window.location.pathname);return;}
+  const p=await waitForProvider(1500);
+  if(!p) return;
+  try{
+    // Only auto-reconnect if already on an allowed network
+    const net=await p.getNetwork().catch(()=>'');
+    if(!isAllowedNetwork(net)) return; // silently skip — wrong network
+    const accs=await p.getAccounts();
+    if(accs?.length) await onConnected(accs[0],p,net);
+  }catch(_){}
+});
+
+// ── TOAST ──
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+// ── SAVE INDICATOR ──
+// Show a subtle persistent badge so user knows data is saved
+(function injectSaveBadge(){
+  const badge = document.createElement('div');
+  badge.id = 'saveBadge';
+  badge.style.cssText = 'position:fixed;bottom:20px;right:20px;z-index:500;display:flex;align-items:center;gap:8px;background:rgba(19,20,31,0.92);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:8px 14px;font-family:"DM Sans",sans-serif;font-size:.72rem;color:#64748b;backdrop-filter:blur(10px);cursor:default;transition:opacity .3s;';
+  badge.innerHTML = '<div style="width:6px;height:6px;border-radius:50%;background:#10b981;box-shadow:0 0 6px #10b981;flex-shrink:0"></div><span id="saveLabel">Data saved locally</span><button onclick="clearSavedState()" title="Reset all saved data" style="background:none;border:none;color:#374151;cursor:pointer;font-size:.9rem;padding:0;margin-left:4px;line-height:1;" onmouseenter="this.style.color=\'#ef4444\'" onmouseleave="this.style.color=\'#374151\'">⊗</button>';
+  document.body.appendChild(badge);
+
+  // Flash "Saved!" when saveState is called
+  const origSave = window.saveState;
+  window.saveState = function(){
+    origSave();
+    const lbl = document.getElementById('saveLabel');
+    if(lbl){ lbl.textContent='✓ Saved!'; lbl.style.color='#10b981'; setTimeout(()=>{ lbl.textContent='Data saved locally'; lbl.style.color=''; },2000); }
+  };
+})();
+renderTiers(); renderBracket(); renderLeaderboard(); renderHistory(); renderEmoji(); updateBars();
+renderLbList(); updateAirdropUI();
+FEED.slice(0,5).forEach((e,i)=>setTimeout(()=>addFeed(e.i,e.m),i*200));
+setInterval(tickTimer,1000);
+setInterval(autoFeed,7000);
+setInterval(tickLbCounters,3000);
+</script>
+</body>
+</html>
